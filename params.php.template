@@ -1,0 +1,8 @@
+<?php
+
+define("OUTPUT_PATH", "output/"); // output path where generated files will be placed
+define("OH_API_BASEURL", "https://home.myopenhab.org/rest"); // base url api openhab
+define("OH_CLOUD_USERNAME", "xxx"); // openhab cloud username if using cloud base url
+define("OH_CLOUD_PASSWORD", "xxx"); // openhab cloud password if using cloud base url
+define("OH_API_TOKEN", "xxx"); // openhab api token
+define("OH_THINGS_WITH_MAN_CHANNELS", ["mqtt:topic"]); // list of thing types with manual channels
