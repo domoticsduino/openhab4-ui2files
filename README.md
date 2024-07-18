@@ -4,15 +4,15 @@ Command line tool to migrate UI config to files for **OpenHAB v. 4** (semantic m
 
 This tool is writter in **PHP 8** and can be run as a docker container in Windows, using runme.bat. Otherwise you could run by yourself using a local **PHP 8** installation
 
-It generate things and items files, reading bridges, things, channels, links, location, equipments, groups, points and items from OpenHAB 4 configuration using API Rest.
+It generate things and items files and partial services.cfg file, reading bridges, things, channels, links, location, equipments, groups, points, items and addons from OpenHAB 4 configuration using API Rest.
 
 - .things files (bridges, things and channels) will be generated in *output_folder*/things
 - .items files (locations, equipments, groups, points, items and links) will be generated in *output_folder*/items
+- addons.cfg.append (content must be added to the original addons.cfg file) will be generated in *output_folder*/services.
 
-In the *output_folder* there are other 2 files
+In the *output_folder* there is 1 file
 
-- 98_addons.txt: list of installed addons as a reference
-- 99_addonsconfig.txt: config variables for installed addons
+- XX_addonsconfig.txt: config variables for installed addons as simple reference
 
 ## Usage
 

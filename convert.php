@@ -8,7 +8,8 @@ include_once("utils.php");
 $paths = [
   "root" => OUTPUT_PATH,
   "things" => OUTPUT_PATH . "things/",
-  "items" => OUTPUT_PATH . "items/"
+  "items" => OUTPUT_PATH . "items/",
+  "services" => OUTPUT_PATH . "services/"
 ];
 
 foreach($paths as $p)
@@ -16,6 +17,7 @@ foreach($paths as $p)
     mkdir($p);
 
 $addons = [];
+$addonsType = [];
 $addonsConfig = [];
 $things = [];
 $bridges = [];
@@ -32,12 +34,17 @@ $responseAddonPlain = curlGET($urlAddons, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, 
 $responseAddon = empty($responseAddonPlain) ? null : json_decode($responseAddonPlain);
 foreach($responseAddon as $a)
   if(!empty($a->installed)){
-    array_push($addons, $a->id . " " . $a->uid . " " . $a->label);
+    if(!array_key_exists($a->type, $addonsType))
+      $addonsType[$a->type] = [];
+    array_push($addonsType[$a->type], $a->id);
     $urlAddonsConfig = OH_API_BASEURL . "/addons/" . $a->uid . "/config";
     $responseAddonConfigPlain = curlGET($urlAddonsConfig, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
     if(!empty($responseAddonConfigPlain) && $responseAddonConfigPlain != "{}")
       array_push($addonsConfig, $a->uid . PHP_EOL . $responseAddonConfigPlain);
   }
+if(!empty($addonsType))
+  foreach($addonsType as $t => $a)
+    array_push($addons, $t . " = " . implode(", ", $a));
 
 $urlThings = OH_API_BASEURL . "/things";
 $responseThingPlain = curlGET($urlThings, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
@@ -152,8 +159,8 @@ foreach($response as $obj){
     array_push($items, $output);
 }
 
-file_put_contents($paths["root"] . "98_addons.txt", implode(PHP_EOL, $addons));
-file_put_contents($paths["root"] . "99_addonsconfig.txt", implode(PHP_EOL, $addonsConfig));
+file_put_contents($paths["root"] . "XX_addonsconfig.txt", implode(PHP_EOL, $addonsConfig));
+file_put_contents($paths["services"] . "addons.cfg.append", implode(PHP_EOL, $addons));
 file_put_contents($paths["things"] . "00_bridges.things", implode(PHP_EOL, $bridges));
 file_put_contents($paths["things"] . "01_things.things", implode(PHP_EOL, $things));
 file_put_contents($paths["items"] . "00_locations.items", implode(PHP_EOL, $locations));
