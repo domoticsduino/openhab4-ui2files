@@ -9,7 +9,8 @@ $paths = [
   "root" => OUTPUT_PATH,
   "things" => OUTPUT_PATH . "things/",
   "items" => OUTPUT_PATH . "items/",
-  "services" => OUTPUT_PATH . "services/"
+  "services" => OUTPUT_PATH . "services/",
+  "rules" => OUTPUT_PATH . "rules/"
 ];
 
 foreach($paths as $p)
@@ -28,6 +29,7 @@ $equipments = [];
 $points = [];
 $links = [];
 $bridgesList = [];
+$rules = [];
 
 $urlAddons = OH_API_BASEURL . "/addons";
 $responseAddonPlain = curlGET($urlAddons, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
@@ -158,6 +160,14 @@ foreach($response as $obj){
   else
     array_push($items, $output);
 }
+
+$urlRules = OH_API_BASEURL . "/rules";
+$responsePlain = curlGET($urlRules, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
+$response = empty($responsePlain) ? null : json_decode($responsePlain);
+if(empty($response) || !empty($response->error->message))
+  die("ERROR => " . (empty($response) ? "SYSTEM ERROR" : $response->error->message));
+foreach($response as $obj)
+  file_put_contents($paths["rules"] . $obj->uid . "_rules.json", json_encode($obj));
 
 file_put_contents($paths["root"] . "XX_addonsconfig.txt", implode(PHP_EOL, $addonsConfig));
 file_put_contents($paths["services"] . "addons.cfg.append", implode(PHP_EOL, $addons));
