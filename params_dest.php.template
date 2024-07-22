@@ -1,0 +1,7 @@
+<?php
+
+define("RULES_PAYLOAD_PATH", "output/rules"); // input path where json payload files will be found
+define("OH_API_BASEURL", "https://home.myopenhab.org/rest"); // base url api openhab
+define("OH_CLOUD_USERNAME", "xxx"); // openhab cloud username if using cloud base url
+define("OH_CLOUD_PASSWORD", "xxx"); // openhab cloud password if using cloud base url
+define("OH_API_TOKEN", "xxx"); // openhab api token
