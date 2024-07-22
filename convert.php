@@ -33,7 +33,7 @@ $rules = [];
 
 $urlAddons = OH_API_BASEURL . "/addons";
 $responseAddonPlain = curlGET($urlAddons, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
-$responseAddon = empty($responseAddonPlain) ? null : json_decode($responseAddonPlain);
+$responseAddon = empty($responseAddonPlain["response"]) ? null : json_decode($responseAddonPlain["response"]);
 foreach($responseAddon as $a)
   if(!empty($a->installed)){
     if(!array_key_exists($a->type, $addonsType))
@@ -41,8 +41,8 @@ foreach($responseAddon as $a)
     array_push($addonsType[$a->type], $a->id);
     $urlAddonsConfig = OH_API_BASEURL . "/addons/" . $a->uid . "/config";
     $responseAddonConfigPlain = curlGET($urlAddonsConfig, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
-    if(!empty($responseAddonConfigPlain) && $responseAddonConfigPlain != "{}")
-      array_push($addonsConfig, $a->uid . PHP_EOL . $responseAddonConfigPlain);
+    if(!empty($responseAddonConfigPlain["response"]) && $responseAddonConfigPlain["response"] != "{}")
+      array_push($addonsConfig, $a->uid . PHP_EOL . $responseAddonConfigPlain["response"]);
   }
 if(!empty($addonsType))
   foreach($addonsType as $t => $a)
@@ -50,7 +50,7 @@ if(!empty($addonsType))
 
 $urlThings = OH_API_BASEURL . "/things";
 $responseThingPlain = curlGET($urlThings, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
-$responseThing = empty($responseThingPlain) ? null : json_decode($responseThingPlain);
+$responseThing = empty($responseThingPlain["response"]) ? null : json_decode($responseThingPlain["response"]);
 foreach($responseThing as $t)
   if(!empty($t->bridgeUID) && !in_array($t->bridgeUID, $bridgesList))
     array_push($bridgesList, $t->bridgeUID);
@@ -96,7 +96,7 @@ foreach($responseThing as $t){
 
 $urlLinks = OH_API_BASEURL . "/links";
 $responseLinkPlain = curlGET($urlLinks, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
-$responseLink = empty($responseLinkPlain) ? null : json_decode($responseLinkPlain);
+$responseLink = empty($responseLinkPlain["response"]) ? null : json_decode($responseLinkPlain["response"]);
 foreach($responseLink as $l){
   if(!array_key_exists($l->itemName, $links))
     $links[$l->itemName] = $l;
@@ -106,7 +106,7 @@ foreach($responseLink as $l){
 
 $urlItems = OH_API_BASEURL . "/items";
 $responsePlain = curlGET($urlItems, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
-$response = empty($responsePlain) ? null : json_decode($responsePlain);
+$response = empty($responsePlain["response"]) ? null : json_decode($responsePlain["response"]);
 if(empty($response) || !empty($response->error->message))
   die("ERROR => " . (empty($response) ? "SYSTEM ERROR" : $response->error->message));
 foreach($response as $obj){
@@ -163,7 +163,7 @@ foreach($response as $obj){
 
 $urlRules = OH_API_BASEURL . "/rules";
 $responsePlain = curlGET($urlRules, OH_CLOUD_USERNAME, OH_CLOUD_PASSWORD, ["X-OPENHAB-TOKEN: " . OH_API_TOKEN]);
-$response = empty($responsePlain) ? null : json_decode($responsePlain);
+$response = empty($responsePlain["response"]) ? null : json_decode($responsePlain["response"]);
 if(empty($response) || !empty($response->error->message))
   die("ERROR => " . (empty($response) ? "SYSTEM ERROR" : $response->error->message));
 foreach($response as $obj)
