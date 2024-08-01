@@ -154,8 +154,17 @@ foreach($response as $obj){
       array_push($bindings, $str);
     }
   }
-  if(array_key_exists($obj->name, $links) && !empty($links[$obj->name]->channelUID))
-    array_push($bindings, "channel=\"" . $links[$obj->name]->channelUID . "\"");
+  if(array_key_exists($obj->name, $links) && !empty($links[$obj->name]->channelUID)){
+    $channel = "channel=\"" . $links[$obj->name]->channelUID . "\"";
+    if(!empty($links[$obj->name]->configuration)){
+      $tmp = [];
+      foreach((array)$links[$obj->name]->configuration as $k => $v)
+        array_push($tmp, $k . "=\"" . $v . "\"");
+      if(count($tmp) > 0)
+        $channel .= "[" . implode(",", $tmp) . "]";
+    }
+    array_push($bindings, $channel);
+  }
   if(!empty($bindings))
     $output .= " { " . implode(", ", $bindings) . " } ";
   if($isLocation)
