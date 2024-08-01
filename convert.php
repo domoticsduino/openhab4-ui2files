@@ -114,7 +114,16 @@ foreach($response as $obj){
   $isEquipment = false;
   $isPoint = false;
   $isGroup = $obj->type == "Group";
-  $output = $obj->type . " " . $obj->name;
+  $output = $obj->type;
+  if($isGroup && !empty($obj->groupType)){
+    $output .= ":" . $obj->groupType;
+    if(!empty($obj->function->name)){
+      $output .= ":" . $obj->function->name;
+      if(!empty($obj->function->params))
+        $output .= "(" . implode(",", $obj->function->params) . ")"; 
+    }
+  }
+  $output .= " " . $obj->name;
   if(!empty($obj->label))
     $output .= " \"" . $obj->label;
   $output .= "\" ";
